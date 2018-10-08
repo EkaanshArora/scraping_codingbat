@@ -37,6 +37,20 @@ for link in all_links:
 
 	# break
 
+	for question_link in question_links:
+		final_page = requests.get(question_link)
+		final_soup = BeautifulSoup(final_page.content,'lxml') 
+		indent_div = final_soup.find('div', attrs={'class':'indent'})
+		minh_div = final_soup.find('div', attrs={'class':'minh'})
+		# problem_statement = indent_div.table.div.string
+		problem_statement = indent_div.table.p.string
+		print(problem_statement)
+		print('\n')
+		test_statement = minh_div.next_siblings
+		examples = [sibling for sibling in test_statement if sibling.string is not None]
+		print('test case is----->')
+		print(examples)
+		print('\n\n\n')
 
 	# 	examples = [sibling for sibling in test_statement if sibling.string is not None]
 	# 	# print(problem_statement)
