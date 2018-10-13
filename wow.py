@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 
+write_to_file=0; #change to 1 to write values to file instead of console
 
 user_agent = UserAgent()
 main_url = 'https://codingbat.com/java'
@@ -37,20 +38,39 @@ for link in all_links:
 
 	# break
 
-	for question_link in question_links:
-		final_page = requests.get(question_link)
-		final_soup = BeautifulSoup(final_page.content,'lxml') 
-		indent_div = final_soup.find('div', attrs={'class':'indent'})
-		minh_div = final_soup.find('div', attrs={'class':'minh'})
-		# problem_statement = indent_div.table.div.string
-		problem_statement = indent_div.table.p.string
-		print(problem_statement)
-		print('\n')
-		test_statement = minh_div.next_siblings
-		examples = [sibling for sibling in test_statement if sibling.string is not None]
-		print('test case is----->')
-		print(examples)
-		print('\n\n\n')
+	if(x==0):
+		for question_link in question_links:
+			final_page = requests.get(question_link)
+			final_soup = BeautifulSoup(final_page.content,'lxml') 
+			indent_div = final_soup.find('div', attrs={'class':'indent'})
+			minh_div = final_soup.find('div', attrs={'class':'minh'})
+			# problem_statement = indent_div.table.div.string
+			problem_statement = indent_div.table.p.string
+			print(problem_statement)
+			print('\n')
+			test_statement = minh_div.next_siblings
+			examples = [sibling for sibling in test_statement if sibling.string is not None]
+			print('test case is----->')
+			print(examples)
+			print('\n\n\n')
+	else:
+		f = open('data.txt','w',encoding='utf-8')
+		for question_link in question_links:
+			final_page = requests.get(question_link)
+			final_soup = BeautifulSoup(final_page.content,'lxml') 
+			indent_div = final_soup.find('div', attrs={'class':'indent'})
+			minh_div = final_soup.find('div', attrs={'class':'minh'})
+			problem_statement = indent_div.table.p.string
+			f.write(problem_statement)
+			f.write('\n')
+			test_statement = minh_div.next_siblings
+			f.write('test case: ')
+			for sibling in test_statement:
+				if sibling.string is not None:
+					f.write(sibling)
+			f.write('\n')
+			print('written\n')
+	f.close		
 
 	# 	examples = [sibling for sibling in test_statement if sibling.string is not None]
 	# 	# print(problem_statement)
